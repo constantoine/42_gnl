@@ -6,7 +6,7 @@
 /*   By: crebert <crebert@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 13:49:11 by crebert           #+#    #+#             */
-/*   Updated: 2019/11/19 16:51:56 by crebert          ###   ########.fr       */
+/*   Updated: 2019/11/19 16:56:46 by crebert          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ void	ft_lstpushfront(t_list **start, int fd, char *src)
 {
 	t_list	*elem;
 
+	if (!start)
+		start = malloc(sizeof(t_list *));
 	if (!(elem = malloc(sizeof(t_list))))
 		return ;
 	elem->buffer = ft_strndup(src, 0, 0);

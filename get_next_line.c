@@ -6,7 +6,7 @@
 /*   By: crebert <crebert@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 11:42:15 by crebert           #+#    #+#             */
-/*   Updated: 2019/11/19 16:47:51 by crebert          ###   ########.fr       */
+/*   Updated: 2019/11/19 16:56:00 by crebert          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,6 @@ int		get_next_line(int fd, char **line)
 	static t_list		**maillon = NULL;
 
 	ret = 1;
-	if (!maillon)
-		maillon = malloc(sizeof(t_list *));
 	tmp = get_fd_buffer(maillon, fd);
 	if (tmp && tmp[ft_strchr(tmp)] == '\n')
 	{
