@@ -6,7 +6,7 @@
 /*   By: crebert <crebert@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 13:49:11 by crebert           #+#    #+#             */
-/*   Updated: 2019/11/19 14:14:02 by crebert          ###   ########.fr       */
+/*   Updated: 2019/11/19 15:35:13 by crebert          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	ft_lstclear(t_list **start, int fd)
 		if (elem->fd == fd)
 		{
 			if (prev)
-					prev->next = elem->next;
+				prev->next = elem->next;
 			else
 				*start = elem->next;
 			free(elem->buffer);
@@ -84,17 +84,20 @@ void	ft_lstpushfront(t_list **start, int fd, char *src)
 	start = &elem;
 }
 
-int	ft_strchr(const char *s)
+size_t	ft_strchr(const char *s)
 {
-	int	index;
+	size_t	index;
 
 	index = 0;
 	while (s[index] && s[index] != '\n')
 		index++;
-	if (s[index] == '\n')
-		return (index);
-	return (-1);
+	return (index);
 }
+
+/*
+** If buffer exists, will return it's content up to the end/first newline
+** If it returns the full buffer, will then delete associated chained link
+*/
 
 char	*get_fd_buffer(t_list **start, int fd)
 {
@@ -109,17 +112,16 @@ char	*get_fd_buffer(t_list **start, int fd)
 	{
 		if (elem->fd == fd)
 		{
-			index = 0;
-			while (elem->buffer[index])
-				if (elem->buffer[index++] == '\n')
-					res = ft_strndup(elem->buffer, index);
-			if (!res)
-				res = ft_strndup(elem->buffer, 0);
+			index = ft_strchr(elem->buffer);
+			res = ft_strndup(elem->buffer, index);
 			if (!elem->buffer[index])
 				ft_lstclear(start, fd);
-			tmp = ft_strndup(&elem->buffer[index], 0);
-			free(elem->buffer);
-			elem->buffer = tmp;
+			else
+			{
+				tmp = ft_strndup(&elem->buffer[index], 0);
+				free(elem->buffer);
+				elem->buffer = tmp;
+			}
 		}
 		elem = elem->next;
 	}
