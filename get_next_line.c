@@ -6,7 +6,7 @@
 /*   By: crebert <crebert@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 11:42:15 by crebert           #+#    #+#             */
-/*   Updated: 2019/11/19 16:56:00 by crebert          ###   ########.fr       */
+/*   Updated: 2019/11/19 17:44:53 by crebert          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int		get_next_line(int fd, char **line)
 		if (ret == -1)
 			return (-1);
 		buffer[ret] = '\0';
-		index = ft_strchr(tmp);
+		index = ft_strchr(buffer);
 		if (!index)
 			tmp = ft_strjoin(tmp, buffer);
 		else
