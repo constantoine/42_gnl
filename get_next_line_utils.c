@@ -6,7 +6,7 @@
 /*   By: crebert <crebert@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 13:49:11 by crebert           #+#    #+#             */
-/*   Updated: 2019/11/19 15:35:13 by crebert          ###   ########.fr       */
+/*   Updated: 2019/11/19 15:40:43 by crebert          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,6 +140,8 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	len2 = 0;
 	if (!s1)
 		return (ft_strndup(s2, 0));
+	if (!s2)
+		return (ft_strndup(s1, 0));
 	while (s1[len1])
 		len1++;
 	while (s2[len2])
