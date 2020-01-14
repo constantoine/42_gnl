@@ -6,7 +6,7 @@
 /*   By: crebert <crebert@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 14:16:53 by crebert           #+#    #+#             */
-/*   Updated: 2020/01/14 16:48:52 by crebert          ###   ########.fr       */
+/*   Updated: 2020/01/14 23:31:43 by crebert          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 9
+#  define BUFFER_SIZE 1
 # endif
 
 # include <stddef.h>

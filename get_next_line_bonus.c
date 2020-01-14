@@ -6,85 +6,13 @@
 /*   By: crebert <crebert@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:49:34 by crebert           #+#    #+#             */
-/*   Updated: 2020/01/14 23:59:08 by crebert          ###   ########.fr       */
+/*   Updated: 2020/01/14 23:17:31 by crebert          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdio.h>
 
-/*
-size_t	ft_strlen(char const *str)
-{
-	size_t	len;
-
-	if (!str)
-		return (0);
-	len = 0;
-	while (str[len])
-		len++;
-	return (len);
-}
-
-char	*ft_strchr(const char *s, int c)
-{
-	while (*s && *s != c)
-		s++;
-	if (*s == c)
-		return ((char *)s);
-	return (NULL);
-}
-
-char	*ft_strndup(const char *s1, size_t len)
-{
-	size_t	index;
-	char	*ptr;
-
-	if (!(ptr = malloc(sizeof(char) * (1 + len))))
-		return (NULL);
-	index = 0;
-	while (len--)
-		ptr[index++] = *s1++;
-	ptr[index] = 0;
-	return (ptr);
-}
-
-char	*ft_strdup(const char *s1)
-{
-	int		index;
-	char	*ptr;
-
-	if (!(ptr = malloc(sizeof(char) * (1 + ft_strlen(s1)))))
-		return (NULL);
-	index = -1;
-	while (s1[++index])
-		ptr[index] = s1[index];
-	ptr[index] = 0;
-	return (ptr);
-}
-
-char	*ft_strjoin(char const *s1, char const *s2)
-{
-	size_t	index;
-	char	*str;
-
-	index = 0;
-	if (!s1 && !s2)
-		return (NULL);
-	if (!s1)
-		return (ft_strdup(s2));
-	if (!s2)
-		return (ft_strdup(s1));
-	if (!(str = malloc(sizeof(char) * (1 + ft_strlen(s1) + ft_strlen(s2)))))
-		return (NULL);
-	while (*s1)
-		str[index++] = *s1++;
-	while (*s2)
-		str[index++] = *s2++;
-	str[index] = 0;
-	return (str);
-}
-*/
 static void	delete_cache(char **cache)
 {
 	if (*cache)
@@ -139,10 +67,12 @@ static int	get_next_line2(char **cache, int fd, char **line, int ret)
 {
 	if (ret == -1)
 		return (GNL_ERROR);
-	if (!cache[fd])
+	if (!ret)
 	{
-		if (!(*line = ft_strdup("")))
-			return (GNL_ERROR);
+		{
+			if (!(*line = ft_strdup("")))
+				return (GNL_ERROR);
+		}
 		return (GNL_EOF);
 	}
 	return (get_cache(&cache[fd], line));
@@ -176,7 +106,6 @@ int			get_next_line(int fd, char **line)
 	}
 	return (get_next_line2(cache, fd, line, ret));
 }
-
 /*
 int			main(int ac, char **av)
 {
@@ -190,7 +119,7 @@ int			main(int ac, char **av)
 	while (index <= ac)
 	{
 		ln = 0;
-		fd = open(ac >= 2 ? av[index] : "42TESTERS-GNL/files/half_marge_top", O_RDONLY);
+		fd = open(ac >= 2 ? av[index] : "get_next_line.h", O_RDONLY);
 		while ((ret = get_next_line(fd, &line)) == 1)
 		{
 			if (ret)
