@@ -6,7 +6,7 @@
 /*   By: crebert <crebert@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 14:16:53 by crebert           #+#    #+#             */
-/*   Updated: 2020/01/14 23:31:43 by crebert          ###   ########.fr       */
+/*   Updated: 2020/01/29 13:21:02 by crebert          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1
+#  define BUFFER_SIZE 3
 # endif
 
 # include <stddef.h>
@@ -25,6 +25,7 @@
 # include <stdlib.h>
 # include <fcntl.h>
 
+int		get_next_line(int fd, char **line);
 size_t	ft_strlen(char const *str);
 char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_strchr(const char *str, int c);

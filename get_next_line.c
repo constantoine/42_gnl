@@ -6,7 +6,7 @@
 /*   By: crebert <crebert@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:49:34 by crebert           #+#    #+#             */
-/*   Updated: 2020/01/14 23:59:08 by crebert          ###   ########.fr       */
+/*   Updated: 2020/01/29 14:02:21 by crebert          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,27 +85,29 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (str);
 }
 */
-static void	delete_cache(char **cache)
+
+static int	clear_cache(char **cache)
+{
+	unsigned int	fd;
+
+	fd = 0;
+	while (fd < OPEN_MAX + 1)
+	{
+		free(cache[fd]);
+		cache[fd++] = NULL;
+	}
+	return (GNL_ERROR);
+}
+
+static int	get_cache_delete(char **cache)
 {
 	if (*cache)
 	{
 		free(*cache);
 		*cache = NULL;
 	}
+	return (GNL_EOF);
 }
-
-static void	free_and_replace(char **cache, int fd, char *str)
-{
-	if (cache[fd])
-	{
-		free(cache[fd]);
-		cache[fd] = str;
-	}
-}
-
-/*
-** cache is a pointer to cache[fd] because otherwise I get weird bugs??
-*/
 
 static int	get_cache(char **cache, char **line)
 {
@@ -117,64 +119,68 @@ static int	get_cache(char **cache, char **line)
 		len++;
 	if ((*cache)[len] == '\n')
 	{
-		*line = ft_strndup(*cache, len);
-		tmp = ft_strdup(&((*cache)[len + 1]));
-		if (!tmp || *line == NULL)
+		if (!(*line = ft_strndup(*cache, len)))
+			return (GNL_ERROR);
+		if (!(tmp = ft_strdup(&((*cache)[len + 1]))))
+			get_cache_delete(line);
+		if (!tmp)
 			return (GNL_ERROR);
 		free(*cache);
 		*cache = tmp;
 		if ((*cache)[0] == 0)
-			delete_cache(cache);
+			get_cache_delete(cache);
+		return (GNL_SUCCESS);
 	}
-	else
-	{
-		if (!(*line = ft_strdup(*cache)))
-			return (GNL_ERROR);
-		delete_cache(cache);
-	}
-	return (GNL_SUCCESS);
+	if (!(*line = ft_strdup(*cache)))
+		return (GNL_ERROR);
+	return (get_cache_delete(cache));
 }
 
-static int	get_next_line2(char **cache, int fd, char **line, int ret)
+static int	get_next_line_read(int fd, char **line, char **cache)
 {
-	if (ret == -1)
-		return (GNL_ERROR);
-	if (!cache[fd])
+	int		ret;
+	char	*tmp;
+	char	buffer[BUFFER_SIZE + 1];
+
+	while ((ret = read(fd, buffer, BUFFER_SIZE)) > 0)
 	{
-		if (!(*line = ft_strdup("")))
-			return (GNL_ERROR);
-		return (GNL_EOF);
+		buffer[ret] = 0;
+		if (!(tmp = ft_strjoin(*line, buffer)))
+			return (clear_cache(cache));
+		*line = tmp;
+		if (ft_strchr(buffer, '\n'))
+			break ;
 	}
-	return (get_cache(&cache[fd], line));
+	if (ret == -1)
+		return (clear_cache(cache));
+	if (!ft_strchr(*line, '\n'))
+		return (GNL_EOF);
+	if (!(tmp = ft_strndup(*line, ft_strchr(*line, '\n') - *line)))
+		return (clear_cache(cache));
+	if (!(cache[fd] =
+	ft_strdup(&((*line)[ft_strchr(*line, '\n') - *line + 1]))))
+		return (clear_cache(cache));
+	free(*line);
+	*line = tmp;
+	return (GNL_SUCCESS);
 }
 
 int			get_next_line(int fd, char **line)
 {
 	static char	*cache[OPEN_MAX + 1];
-	char		buffer[BUFFER_SIZE + 1];
-	char		*tmp;
 	int			ret;
 
-	if (fd < 0 || !line)
+	if (fd < 0 || !line || BUFFER_SIZE <= 0)
 		return (GNL_ERROR);
-	while ((ret = read(fd, buffer, BUFFER_SIZE)) > 0)
+	*line = NULL;
+	if (cache[fd])
 	{
-		buffer[ret] = 0;
-		if (!cache[fd])
-		{
-			if (!(cache[fd] = ft_strdup(buffer)))
-				return (GNL_ERROR);
-		}
-		else
-		{
-			if (!(tmp = ft_strjoin(cache[fd], buffer)))
-				return (GNL_ERROR);
-			free_and_replace(cache, fd, tmp);
-		}
-		if (ft_strchr(cache[fd], '\n'))
-			break ;
+		if ((ret = get_cache(&cache[fd], line)) == GNL_ERROR)
+			return (clear_cache(cache));
+		if (ret == GNL_SUCCESS)
+			return (GNL_SUCCESS);
 	}
-	return (get_next_line2(cache, fd, line, ret));
+	return (get_next_line_read(fd, line, cache));
 }
 
 /*
@@ -190,11 +196,10 @@ int			main(int ac, char **av)
 	while (index <= ac)
 	{
 		ln = 0;
-		fd = open(ac >= 2 ? av[index] : "42TESTERS-GNL/files/half_marge_top", O_RDONLY);
-		while ((ret = get_next_line(fd, &line)) == 1)
+		fd = open(ac >= 2 ? av[index] : "42TESTERS-GNL/files/4_newlines", O_RDONLY);
+		while ((ret = get_next_line(fd, &line)) > 0)
 		{
-			if (ret)
-				printf("%.2d: %s\n", ln++, line);
+			printf("%.2d: %s\n", ln++, line);
 			free(line);
 		}
 		index++;

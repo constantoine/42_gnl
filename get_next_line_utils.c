@@ -6,7 +6,7 @@
 /*   By: crebert <crebert@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/14 13:41:15 by crebert           #+#    #+#             */
-/*   Updated: 2020/01/14 16:31:25 by crebert          ###   ########.fr       */
+/*   Updated: 2020/01/28 19:26:36 by crebert          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ size_t	ft_strlen(char const *str)
 
 char	*ft_strchr(const char *s, int c)
 {
+	if (!s)
+		return (NULL);
 	while (*s && *s != c)
 		s++;
 	if (*s == c)
