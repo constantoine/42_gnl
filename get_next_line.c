@@ -6,12 +6,11 @@
 /*   By: crebert <crebert@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 20:49:34 by crebert           #+#    #+#             */
-/*   Updated: 2020/01/30 10:58:06 by crebert          ###   ########.fr       */
+/*   Updated: 2020/01/30 16:23:29 by crebert          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
 
 int			clear_cache(char **cache)
 {
@@ -71,6 +70,13 @@ static int	get_next_line_read(int fd, char **line, char **cache)
 
 	while ((ret = read(fd, buffer, BUFFER_SIZE)) > 0)
 	{
+		if (!buffer[0])
+		{
+			free(*line);
+			if (!(*line = ft_strndup("", -1)))
+				return (clear_cache(cache));
+			return (GNL_EOF);
+		}
 		buffer[ret] = 0;
 		if (!(tmp = ft_strjoin(*line, buffer)))
 			return (clear_cache(cache));
