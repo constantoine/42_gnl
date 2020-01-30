@@ -6,7 +6,7 @@
 /*   By: crebert <crebert@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/14 13:41:15 by crebert           #+#    #+#             */
-/*   Updated: 2020/01/28 19:26:36 by crebert          ###   ########.fr       */
+/*   Updated: 2020/01/30 10:55:31 by crebert          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,32 +35,41 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-char	*ft_strndup(const char *s1, size_t len)
+char	*ft_strndup(const char *s1, int len)
 {
-	size_t	index;
+	int		index;
 	char	*ptr;
 
+	if (len == -1)
+		len = ft_strlen(s1);
 	if (!(ptr = malloc(sizeof(char) * (1 + len))))
 		return (NULL);
 	index = 0;
-	while (len--)
+	while (len-- && *s1)
 		ptr[index++] = *s1++;
 	ptr[index] = 0;
 	return (ptr);
 }
 
-char	*ft_strdup(const char *s1)
+int		get_next_line_read_helper(int fd, char **line, char **cache)
 {
-	int		index;
-	char	*ptr;
+	char	*tmp;
 
-	if (!(ptr = malloc(sizeof(char) * (1 + ft_strlen(s1)))))
-		return (NULL);
-	index = -1;
-	while (s1[++index])
-		ptr[index] = s1[index];
-	ptr[index] = 0;
-	return (ptr);
+	if (!(*line))
+		if (!(*line = ft_strndup("", -1)))
+			return (GNL_ERROR);
+	if (!(*line)[0])
+		return (GNL_EOF);
+	if (!ft_strchr(*line, '\n'))
+		return (GNL_EOF);
+	if (!(tmp = ft_strndup(*line, ft_strchr(*line, '\n') - *line)))
+		return (clear_cache(cache));
+	if (!(cache[fd] =
+	ft_strndup(&((*line)[ft_strchr(*line, '\n') - *line + 1]), -1)))
+		return (clear_cache(cache));
+	free(*line);
+	*line = tmp;
+	return (GNL_SUCCESS);
 }
 
 char	*ft_strjoin(char const *s1, char const *s2)
@@ -72,9 +81,9 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	if (!s1 && !s2)
 		return (NULL);
 	if (!s1)
-		return (ft_strdup(s2));
+		return (ft_strndup(s2, -1));
 	if (!s2)
-		return (ft_strdup(s1));
+		return (ft_strndup(s1, -1));
 	if (!(str = malloc(sizeof(char) * (1 + ft_strlen(s1) + ft_strlen(s2)))))
 		return (NULL);
 	while (*s1)

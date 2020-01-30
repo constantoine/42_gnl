@@ -6,7 +6,7 @@
 /*   By: crebert <crebert@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/27 14:16:53 by crebert           #+#    #+#             */
-/*   Updated: 2020/01/29 13:21:02 by crebert          ###   ########.fr       */
+/*   Updated: 2020/01/30 10:58:21 by crebert          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,9 @@ int		get_next_line(int fd, char **line);
 size_t	ft_strlen(char const *str);
 char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_strchr(const char *str, int c);
-char	*ft_strndup(const char *s1, size_t len);
-char	*ft_strdup(const char *s1);
+char	*ft_strndup(const char *s1, int len);
+int		get_next_line_read_helper(int fd, char **line, char **cache);
+int		clear_cache(char **cache);
 # define GNL_SUCCESS 1
 # define GNL_EOF 0
 # define GNL_ERROR -1
